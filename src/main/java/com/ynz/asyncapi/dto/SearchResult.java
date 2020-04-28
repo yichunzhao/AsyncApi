@@ -2,13 +2,13 @@ package com.ynz.asyncapi.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class SearchResult {
 
     private String name;
 
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
 
 }
