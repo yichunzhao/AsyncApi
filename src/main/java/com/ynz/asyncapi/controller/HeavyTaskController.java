@@ -59,7 +59,7 @@ public class HeavyTaskController {
 
                     SearchResult searchResult = new SearchResult();
                     searchResult.setName("Somebody");
-                    searchResult.setBirthDate(LocalDate.of(1990, Month.AUGUST, 22));
+                    searchResult.setBirthDate(LocalDate.of(1990, Month.AUGUST, 22).toString());
 
                     searchResultDeferredResult.setResult(searchResult);
                 }

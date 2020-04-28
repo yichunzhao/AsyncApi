@@ -9,6 +9,6 @@ public class SearchResult {
 
     private String name;
 
-    private LocalDate birthDate;
+    private String birthDate;
 
 }
