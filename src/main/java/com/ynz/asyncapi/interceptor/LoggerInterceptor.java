@@ -8,8 +8,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.time.Duration;
-import java.time.Instant;
+import java.util.Optional;
 
 /**
  * the code here demonstrates how an async-request works with the interceptor.
@@ -19,7 +18,7 @@ import java.time.Instant;
  */
 
 @Slf4j
-public class LogInterceptor extends HandlerInterceptorAdapter {
+public class LoggerInterceptor extends HandlerInterceptorAdapter {
     private int sequence = 1;
 
     @Autowired
@@ -27,45 +26,29 @@ public class LogInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info(" in preHandle");
-
-        log.info("request session id: " + request.getRequestedSessionId());
-
-        log.info("session is: " + session.getId());
-
-        session.setAttribute("pre-moment:" + sequence, Instant.now());
-        sequence++;
+        log.info("[preHandle][" + request + "]" + "[" + request.getMethod() + "]" + request.getRequestURI() + "  source IP:  " + getRemoteAddress(request));
 
         return true;
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        log.info(" in postHandle");
-
-        log.info("response locale : " + response.getLocale());
-
-        log.info("session is: " + session.getId());
-
-
-        session.setAttribute("post-moment:", Instant.now());
+        log.info("[postHandle][" + request + "]" + "[" + request.getMethod() + "]" + request.getRequestURI());
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        log.info(" in after Completion");
-        log.info("session is: " + session.getId());
+        log.info("[afterCompletion][ " + response + "][exception: " + ex + "]");
 
-        session.setAttribute("completed-moment:", Instant.now());
-        Instant start = (Instant) session.getAttribute("pre-moment:1");
-        Instant post = (Instant) session.getAttribute("post-moment:");
-        Instant completed = (Instant) session.getAttribute("completed-moment:");
-        log.info("pre-moment-session: " + start);
-        log.info("post-moment-session:" + post);
-        log.info("completed-moment-session:" + completed);
+        Optional.ofNullable(ex).ifPresent(e -> log.info(ex.toString()));
+    }
 
-        log.info("time-elapsed: " + Duration.between(start, completed));
-
-
+    private String getRemoteAddress(HttpServletRequest request) {
+        String ipFromHeader = request.getHeader("X-FORWARDED-FOR");
+        if (ipFromHeader != null && !ipFromHeader.isEmpty()) {
+            log.debug("ip from proxy - X-FORWARDED-FOR :" + ipFromHeader);
+            return ipFromHeader;
+        }
+        return request.getRemoteAddr();
     }
 }

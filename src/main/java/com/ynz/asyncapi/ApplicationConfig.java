@@ -1,6 +1,6 @@
 package com.ynz.asyncapi;
 
-import com.ynz.asyncapi.interceptor.LogInterceptor;
+import com.ynz.asyncapi.interceptor.LoggerInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -32,7 +32,7 @@ public class ApplicationConfig extends WebMvcConfigurationSupport {
     }
 
     @Bean
-    protected LogInterceptor loginInterceptor() {
-        return new LogInterceptor();
+    protected LoggerInterceptor loginInterceptor() {
+        return new LoggerInterceptor();
     }
 }
