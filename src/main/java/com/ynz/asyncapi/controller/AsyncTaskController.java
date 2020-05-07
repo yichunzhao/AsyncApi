@@ -2,17 +2,18 @@ package com.ynz.asyncapi.controller;
 
 
 import com.ynz.asyncapi.dto.SearchResult;
+import com.ynz.asyncapi.entities.Person;
+import com.ynz.asyncapi.repositories.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -27,10 +28,14 @@ import java.util.concurrent.Callable;
  */
 
 @RestController
+@RequestMapping("/async")
 @Slf4j
-public class HeavyTaskController {
+public class AsyncTaskController {
     @Autowired
     private AsyncTaskExecutor asyncTaskExecutor;
+
+    @Autowired
+    private PersonRepository personRepository;
 
     @PostMapping("/bigTask")
     public Callable<String> postBigTask(HttpServletRequest request) {
@@ -38,6 +43,14 @@ public class HeavyTaskController {
         log.info(" is async enabled? " + request.isAsyncSupported());
 
         return new HeavyTask();
+    }
+
+    @GetMapping("/findPerson/{name}")
+    public Callable<List<Person>> findPersonByName(@PathVariable("name") String name) {
+        return () -> {
+            Thread.sleep(1000);//simulating a delay.
+            return personRepository.findByName(name);
+        };
     }
 
     @GetMapping("/search")

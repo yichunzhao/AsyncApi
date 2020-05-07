@@ -1,13 +1,11 @@
 package com.ynz.asyncapi.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 /**
@@ -19,14 +17,10 @@ import java.util.Optional;
 
 @Slf4j
 public class LoggerInterceptor extends HandlerInterceptorAdapter {
-    private int sequence = 1;
-
-    @Autowired
-    private HttpSession session;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("[preHandle][" + request + "]" + "[" + request.getMethod() + "]" + request.getRequestURI() + "  source IP:  " + getRemoteAddress(request));
+        log.info("[preHandle][" + request + "]" + "[" + request.getMethod() + "]" + request.getRequestURI() + "  Source IP:  " + getRemoteAddress(request));
 
         return true;
     }
@@ -38,15 +32,15 @@ public class LoggerInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        log.info("[afterCompletion][ " + response + "][exception: " + ex + "]");
-
-        Optional.ofNullable(ex).ifPresent(e -> log.info(ex.toString()));
+        log.info("[afterCompletion][ " + response + "]");
+        Optional.ofNullable(ex).ifPresent(e -> log.error("Exception: " + ex));
     }
 
     private String getRemoteAddress(HttpServletRequest request) {
         String ipFromHeader = request.getHeader("X-FORWARDED-FOR");
         if (ipFromHeader != null && !ipFromHeader.isEmpty()) {
             log.debug("ip from proxy - X-FORWARDED-FOR :" + ipFromHeader);
+
             return ipFromHeader;
         }
         return request.getRemoteAddr();
