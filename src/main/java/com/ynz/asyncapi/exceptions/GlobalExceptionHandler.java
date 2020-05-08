@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<RuntimeException> handleNotFoundException(NotFoundException e) {
-        log.error("runtime exception: ", e);
+        log.warn(e.getMessage(), e);
         return new ResponseEntity(e, HttpStatus.NOT_FOUND);
     }
 
