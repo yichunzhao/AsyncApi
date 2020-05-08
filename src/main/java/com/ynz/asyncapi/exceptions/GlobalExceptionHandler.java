@@ -7,14 +7,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "com.ynz.")
 @Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<RuntimeException> handleNotFoundException(NotFoundException e) {
+    public ResponseEntity<String> handleNotFoundException(NotFoundException e) {
         log.warn(e.getMessage(), e);
-        return new ResponseEntity(e, HttpStatus.NOT_FOUND);
+        return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
 
 }

@@ -46,7 +46,7 @@ public class AsyncTaskController {
     }
 
     @GetMapping("/findPerson/{name}")
-    public Callable<List<Person>> findPersonByName(@PathVariable("name") String name) {
+    public Callable<Person> findPersonByName(@PathVariable("name") String name) {
         return () -> {
             Thread.sleep(1000);//simulating a delay.
             return personRepository.findByName(name);

@@ -16,6 +16,7 @@ public class Phone {
     @GeneratedValue
     private int id;
 
+    @Column(length = 8, unique = true)
     private String number;
 
     @ManyToOne
@@ -23,10 +24,9 @@ public class Phone {
     @JsonIgnore
     private Person person;
 
-    public Phone(String number){
+    public Phone(String number) {
         setNumber(number);
     }
-
 
 
 }

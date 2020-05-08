@@ -10,13 +10,15 @@ import java.util.Set;
 
 /**
  * <p>
- * the best practice for modeling oneToMany relationship.
+ * The best practice for modeling oneToMany relationship.
  *
  *     <ul>
- *         <li>modeling as a bilateral relationship.</li>
- *         <li>taking toMany side as the owning side.</li>
- *         <li>taking one aide as the inverse side.</li>
+ *         <li>modeling it as a bilateral relationship.</li>
+ *         <li>taking the toMany side as the owning side.</li>
+ *         <li>taking the one aide as the inverse side.</li>
  *     </ul>
+ *
+ * It reduces the extra junk table.
  *
  * </p>
  */
@@ -30,6 +32,7 @@ public class Person {
     @GeneratedValue
     private int id;
 
+    @Column(nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
