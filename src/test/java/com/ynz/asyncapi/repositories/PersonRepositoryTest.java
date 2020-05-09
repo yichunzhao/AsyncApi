@@ -3,6 +3,9 @@ package com.ynz.asyncapi.repositories;
 import com.ynz.asyncapi.entities.Person;
 import com.ynz.asyncapi.entities.Phone;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +41,19 @@ class PersonRepositoryTest {
     @Autowired
     private PersonRepository personRepository;
 
+
+    @BeforeEach
+    void setupForEachTest() {
+        log.info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    }
+
+    @AfterEach
+    void afterEachTest() {
+        log.info("-------------------------------------------------------------");
+    }
+
     @Test
+    @DisplayName("whenFindByName_thenReturnPerson")
     public void whenFindByName_thenReturnPerson() {
         log.info("whenFindByName_thenReturnPerson");
         //given
@@ -60,6 +75,7 @@ class PersonRepositoryTest {
     }
 
     @Test
+    @DisplayName("whenDeletePersonByName_thenCannotFindIt")
     public void whenDeletePersonByName_thenCannotFindIt() {
         log.info("whenDeletePersonByName_thenCannotFindIt");
         //given
@@ -84,5 +100,23 @@ class PersonRepositoryTest {
                 forEach(id -> assertNotNull(entityManager.find(Phone.class, id)));
     }
 
+    @Test
+    @DisplayName("whenCreatePerson_thenMayFindIt")
+    public void whenCreatePerson_thenMayFindIt() {
+        log.info("whenCreatePerson_thenMayFindIt");
+        //given
+        Person testPerson = new Person();
+        String name = "Erick Freeman";
+        testPerson.setName(name);
+        testPerson.addPhone(new Phone("90009000"));
+        testPerson.addPhone(new Phone("10002000"));
+
+        //when
+        Person persisted = personRepository.save(testPerson);
+
+        //Person is not found
+        Person found = entityManager.find(Person.class, persisted.getId());
+        assertThat(found.getId(), is(persisted.getId()));
+    }
 
 }

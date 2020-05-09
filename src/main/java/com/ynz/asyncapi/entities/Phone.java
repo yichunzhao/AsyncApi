@@ -1,14 +1,13 @@
 package com.ynz.asyncapi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @Entity
 public class Phone {
@@ -22,6 +21,7 @@ public class Phone {
     @ManyToOne
     @JoinColumn
     @JsonIgnore
+    @EqualsAndHashCode.Exclude
     private Person person;
 
     public Phone(String number) {
