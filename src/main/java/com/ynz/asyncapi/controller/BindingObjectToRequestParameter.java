@@ -16,7 +16,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/binding")
 public class BindingObjectToRequestParameter {
-
+    //binding string to LocalDate
     @GetMapping("/findByDate/{date}")
     public ResponseEntity<LocalDate> findByDate(@PathVariable("date") LocalDate date) {
         return ResponseEntity.status(HttpStatus.FOUND).body(date.plusDays(1L));

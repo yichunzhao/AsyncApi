@@ -1,14 +1,22 @@
 package com.ynz.asyncapi.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * Demo Spring MVC handler method arguments that can be directly injected.
+ */
 
 @RestController
 @Slf4j
@@ -39,7 +47,11 @@ public class HandlerMethodArgument {
     @GetMapping("/callbackUri")
     public ResponseEntity<URI> injectUriComponent(UriComponentsBuilder builder) {
         log.info("demo building uri using UriComponentBuilder");
-        URI uri = builder.path("/expectedBath").buildAndExpand("uriBuilder").toUri();
+
+        int id = 100;
+        URI uri = builder.path("/expectedPath/{id}").buildAndExpand(id).toUri();
+
+
         log.info("build URI: " + uri);
         return new ResponseEntity(uri, HttpStatus.CREATED);
     }
@@ -51,6 +63,26 @@ public class HandlerMethodArgument {
 
         log.info("build URI: " + uri);
         return new ResponseEntity(uri, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/sessionId")
+    public ResponseEntity<String> getSessionInfo(HttpSession session) {
+        log.info("get session id ");
+
+        return new ResponseEntity<>(session.getId(), HttpStatus.OK);
+    }
+
+    @GetMapping("/servletUriBuilder")
+    public ResponseEntity<String> getResourceUri(HttpServletRequest request) {
+        int id = 250;
+        URI uri = ServletUriComponentsBuilder.fromRequest(request).pathSegment("{id}").buildAndExpand(id).toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(uri);
+
+        String body = "Using servletComponentsBuilder to create uri ";
+
+        return new ResponseEntity<>(body, headers, HttpStatus.OK);
     }
 
 
